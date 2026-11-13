@@ -15,8 +15,8 @@ from mutagen.mp3 import MP3
 
 # ---------------- CONFIG ----------------
 OUT_DIR = "2026-11-13_Project_18_9Hz_3D_V3"
-PARTS_DIR = os.path.join(OUT_DIR, "parts_v5")
-IMG_DIR = os.path.join(OUT_DIR, "images_v5")
+PARTS_DIR = os.path.join(OUT_DIR, "parts_v51")
+IMG_DIR = os.path.join(OUT_DIR, "images_v51")
 os.makedirs(PARTS_DIR, exist_ok=True)
 os.makedirs(IMG_DIR, exist_ok=True)
 
@@ -24,20 +24,30 @@ MIN_PART_SECONDS = 188.0
 CF_ACCOUNT_ID = os.environ.get("CF_ACCOUNT_ID", "").strip()
 CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "").strip()
 
-OWL_BASE = (
-    "3D Pixar animation movie style, mysterious wise barn owl wearing vintage round brass spectacles and studio headphones, "
-    "sitting at a dark wooden podcast desk in front of a glowing condenser microphone, rich cyan and warm crimson neon studio lighting, "
-    "looking directly at camera as a horror storyteller, ultra detailed 3D character render, 8k, no text, no watermark"
+OWL_CHAR = (
+    "3D Pixar animation movie style, mysterious wise barn owl wearing vintage round brass spectacles and small headset, "
+    "rich cyan and warm amber neon cinematic lighting, looking directly at camera as a horror storyteller, "
+    "ultra detailed 3D character render, atmospheric fog, 8k, no text, no watermark"
 )
 ENV_STYLE = (
     "3D Pixar animation movie style environment shot, vibrant cyan amber crimson neon lighting, "
     "ultra detailed 3D cinematic scene, eerie volumetric fog, dramatic horror atmosphere, 8k, no text, no watermark"
 )
 
+# 12 Distinct Owl Locations (Flying + Sitting on Ground + Trees + Lab + Rooftop)
 OWL_PROMPTS = [
-    f"{OWL_BASE}, medium shot in dark neon podcast studio",
-    f"{OWL_BASE}, dramatic close up looking intensely at camera with glowing reflections in spectacles",
-    f"{OWL_BASE}, slightly angled cinematic studio shot with eerie mist behind chair"
+    f"{OWL_CHAR}, wings spread wide flying swiftly down from a tall dark misty tree at night toward camera, glowing cyan moonlight",
+    f"{OWL_CHAR}, sitting calmly on wet cobblestone ground beside a glowing vintage lantern in dark misty forest",
+    f"{OWL_CHAR}, perched on a gnarled ancient tree branch overlooking a glowing dark science facility at night",
+    f"{OWL_CHAR}, sitting on a dusty metallic laboratory table beside a glowing red EMF meter and headphones",
+    f"{OWL_CHAR}, flying dynamically through dark rainy neon-lit alleyways with glowing blue wings edge-light",
+    f"{OWL_CHAR}, sitting on wet concrete underground basement stairs with eerie red emergency lights behind",
+    f"{OWL_CHAR}, perched on a rusted iron windowsill looking into camera with glowing fog outside",
+    f"{OWL_CHAR}, sitting on a pile of old 1982 leather diaries and glowing cassette tapes on dark floor",
+    f"{OWL_CHAR}, gliding low over misty dark ground under purple storm clouds with intense glowing eyes",
+    f"{OWL_CHAR}, perched on top of a vintage copper Tesla coil humming with bright blue sparks",
+    f"{OWL_CHAR}, sitting on a rooftop edge at 3 AM with glowing neon Delhi city lights far below in fog",
+    f"{OWL_CHAR}, sitting in a dark neon podcast studio chair in front of a glowing condenser microphone"
 ]
 
 # ---------------- 8-PART CONVERSATIONAL AMAAN-STYLE HORROR SCRIPT ----------------
@@ -415,7 +425,7 @@ async def make_voice_and_subs(text, mp3_path, ass_path):
             await asyncio.sleep(4)
     raise RuntimeError("TTS failed after 5 attempts")
 
-# ---------------- BUILD PART: ALTERNATING OWL HOST + STORY SCENES ----------------
+# ---------------- BUILD PART: ALTERNATING MULTI-LOCATION OWL + SCENES ----------------
 def render_part(part_data, timeline_imgs, raw_mp3, ass_path, out_mp4):
     voice_dur = float(MP3(raw_mp3).info.length)
     part_dur = max(MIN_PART_SECONDS, voice_dur + 4.0)
@@ -437,10 +447,9 @@ def render_part(part_data, timeline_imgs, raw_mp3, ass_path, out_mp4):
     for i, img in enumerate(abs_imgs):
         inputs.extend(["-loop", "1", "-t", f"{scene_dur:.3f}", "-i", img])
         if i % 2 == 0:
-            # Owl Host talking bounce + gentle lean-in
-            zp = f"zoompan=z='1.02+0.025*abs(sin(on*0.22))':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)+sin(on*0.28)*4':d={frames}:s=1280x720:fps=24"
+            # Flying/Talking Owl Motion: smooth forward glide + gentle bobbing
+            zp = f"zoompan=z='1.02+0.0007*on+0.018*abs(sin(on*0.22))':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)+sin(on*0.28)*5':d={frames}:s=1280x720:fps=24"
         elif i in (5, 9):
-            # Story scare camera shake
             zp = f"zoompan=z='1.06+0.0008*on':x='iw/2-(iw/zoom/2)+sin(on*1.7)*7':y='ih/2-(ih/zoom/2)+cos(on*1.3)*5':d={frames}:s=1280x720:fps=24"
         else:
             zp = f"zoompan=z='min(zoom+0.0009,1.16)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={frames}:s=1280x720:fps=24"
@@ -485,14 +494,15 @@ def render_part(part_data, timeline_imgs, raw_mp3, ass_path, out_mp4):
         os.chdir(orig_cwd)
 
 async def main():
-    # 1. Generate 3 consistent 3D Owl Host angles once
+    # 1. Generate 12 distinct Owl locations (flying, ground, trees, lab, rooftop, studio)
     owl_imgs = []
     for idx, op in enumerate(OWL_PROMPTS):
-        op_path = os.path.join(IMG_DIR, f"owl_host_{idx}.png")
-        generate_3d_image(op, op_path, "OWL-CAST ● LIVE STUDIO", seed=777 + idx)
+        op_path = os.path.join(IMG_DIR, f"owl_loc_{idx:02d}.png")
+        generate_3d_image(op, op_path, "OWL-CAST ● LIVE", seed=800 + idx)
         owl_imgs.append(op_path)
 
     part_files = []
+    owl_cursor = 0
     for data in PARTS:
         p = data["part"]
         out_mp4 = os.path.join(PARTS_DIR, f"part_{p:02d}.mp4")
@@ -501,12 +511,13 @@ async def main():
 
         if os.path.exists(out_mp4) and os.path.getsize(out_mp4) > 500000:
             part_files.append(out_mp4)
+            owl_cursor += len(data["scenes"])
             continue
 
-        # 2. Generate 5 story scenes and interleave with Owl Host (10 clips/part)
         timeline_imgs = []
         for s_idx, prompt in enumerate(data["scenes"]):
-            owl_pick = owl_imgs[(p + s_idx) % len(owl_imgs)]
+            owl_pick = owl_imgs[owl_cursor % len(owl_imgs)]
+            owl_cursor += 1
             timeline_imgs.append(owl_pick)
             sc_path = os.path.join(IMG_DIR, f"p{p:02d}_s{s_idx:02d}.png")
             generate_3d_image(prompt, sc_path, data["hud"], seed=p * 100 + s_idx)
@@ -515,22 +526,22 @@ async def main():
         print(f"[Part {p}] Generating conversational Hindi narration...")
         await make_voice_and_subs(data["narration"], raw_mp3, ass_path)
 
-        print(f"[Part {p}] Rendering Owl Host + Horror Scenes...")
+        print(f"[Part {p}] Rendering Multi-Location Owl Host + Horror Scenes...")
         render_part(data, timeline_imgs, raw_mp3, ass_path, out_mp4)
         part_files.append(out_mp4)
         await asyncio.sleep(3)
 
-    concat_txt = "/tmp/all_parts_v5.txt"
+    concat_txt = "/tmp/all_parts_v51.txt"
     with open(concat_txt, "w") as f:
         for pf in part_files:
             f.write(f"file '{os.path.abspath(pf)}'\n")
 
-    final_mp4 = os.path.join(OUT_DIR, "FINAL_3D_OWL_HORROR_V5_25MIN_2026-11-13.mp4")
+    final_mp4 = os.path.join(OUT_DIR, "FINAL_3D_OWL_HORROR_V51_25MIN_2026-11-13.mp4")
     subprocess.run([
         "ffmpeg", "-y", "-f", "concat", "-safe", "0",
         "-i", concat_txt, "-c", "copy", final_mp4
     ], check=True)
-    print(f"SUCCESS! Final 25+ min Owl Podcast Horror Video ready: {final_mp4}")
+    print(f"SUCCESS! Final 25+ min Multi-Location Owl Horror Video ready: {final_mp4}")
 
 if __name__ == "__main__":
     asyncio.run(main())
