@@ -3,6 +3,7 @@ import re
 import time
 import math
 import wave
+import base64
 import asyncio
 import urllib.parse
 import subprocess
@@ -249,7 +250,7 @@ def is_valid_bright_image(path):
         with Image.open(path) as im:
             rgb = im.convert("RGB")
             arr = np.asarray(rgb, dtype=np.float32)
-            if arr.mean() < 12.0:  # Reject solid black/near-black images
+            if arr.mean() < 12.0:
                 return False
         return True
     except Exception:
@@ -260,9 +261,7 @@ def add_cctv_hud(path, hud_text):
         with Image.open(path) as im:
             im = im.convert("RGB").resize((1280, 720), Image.Resampling.LANCZOS)
             draw = ImageDraw.Draw(im, "RGBA")
-            # Top-right sleek dark pill
             draw.rounded_rectangle([850, 18, 1260, 56], radius=8, fill=(8, 12, 20, 175), outline=(220, 45, 45, 200), width=2)
-            # Glowing red REC dot
             draw.ellipse([866, 30, 880, 44], fill=(255, 40, 40, 255))
             font = ImageFont.load_default()
             draw.text((890, 31), hud_text, fill=(245, 245, 255, 240), font=font)
@@ -280,19 +279,12 @@ def generate_3d_image(prompt, out_path, hud_text, seed):
     if CF_ACCOUNT_ID and CF_API_TOKEN:
         url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}/ai/run/@cf/black-forest-labs/flux-1-schnell"
         headers = {"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"}
-        payload = {"prompt": prompt, "num_steps": 4}
+        payload = {"prompt": prompt, "steps": 4}
         for attempt in range(3):
             try:
                 r = requests.post(url, headers=headers, json=payload, timeout=90)
                 ctype = r.headers.get("Content-Type", "")
-                if r.status_code == 200 and len(r.content) > 18000 and "image" in ctype:
-                    with open(out_path, "wb") as f:
-                        f.write(r.content)
-                    if is_valid_bright_image(out_path):
-                        add_cctv_hud(out_path, hud_text)
-                        return out_path
-                elif r.status_code == 200 and "application/json" in ctype:
-                    import base64
+                if r.status_code == 200 and "application/json" in ctype:
                     b64 = r.json().get("result", {}).get("image")
                     if b64:
                         with open(out_path, "wb") as f:
@@ -300,6 +292,12 @@ def generate_3d_image(prompt, out_path, hud_text, seed):
                         if is_valid_bright_image(out_path):
                             add_cctv_hud(out_path, hud_text)
                             return out_path
+                elif r.status_code == 200 and len(r.content) > 18000:
+                    with open(out_path, "wb") as f:
+                        f.write(r.content)
+                    if is_valid_bright_image(out_path):
+                        add_cctv_hud(out_path, hud_text)
+                        return out_path
                 print(f"[CF Attempt {attempt+1}] HTTP {r.status_code} | {r.text[:160]}")
             except Exception as e:
                 print(f"[CF Err] {e}")
@@ -323,7 +321,7 @@ def generate_3d_image(prompt, out_path, hud_text, seed):
             print(f"[Pollinations Err] {e}")
         time.sleep(3)
 
-    # 3. Colourful Atmospheric Horror Gradient Fallback (never plain black)
+    # 3. Colourful Atmospheric Horror Gradient Fallback
     print(f"[Fallback Gradient] Creating atmospheric frame for {out_path}")
     subprocess.run([
         "ffmpeg", "-y", "-f", "lavfi",
@@ -339,26 +337,22 @@ def generate_horror_bg_wav(wav_path, duration_sec, bpm=75):
     n_samples = int(sr * duration_sec)
     t = np.linspace(0, duration_sec, n_samples, endpoint=False, dtype=np.float32)
 
-    # 1. Sub-bass 18.9 Hz + 55 Hz + dissonant 58.5 Hz eerie drone
     drone = (
         0.22 * np.sin(2 * np.pi * 55.0 * t)
         + 0.18 * np.sin(2 * np.pi * 58.5 * t)
         + 0.12 * np.sin(2 * np.pi * 110.0 * t + 0.5 * np.sin(2 * np.pi * 0.25 * t))
     )
 
-    # 2. Bowed-metal horror screech swells (FM synthesis)
     swell_env = (0.5 + 0.5 * np.sin(2 * np.pi * 0.11 * t - 1.2)) ** 3
     metal_mod = 45.0 * np.sin(2 * np.pi * 19.0 * t)
     metal_screech = 0.16 * swell_env * np.sin(2 * np.pi * 311.0 * t + metal_mod)
 
-    # 3. Lub-Dub Heartbeat (accelerates with bpm)
     beat_period = 60.0 / bpm
     phase = np.mod(t, beat_period)
     lub = np.exp(-((phase - 0.06) ** 2) / (2 * 0.022 ** 2)) * np.sin(2 * np.pi * 52.0 * t)
     dub = np.exp(-((phase - 0.24) ** 2) / (2 * 0.028 ** 2)) * np.sin(2 * np.pi * 44.0 * t)
     heartbeat = 0.55 * (lub + 0.78 * dub)
 
-    # 4. Creepy vinyl/lab wind hiss
     rng = np.random.default_rng(seed=int(bpm))
     noise = rng.normal(0.0, 0.035, n_samples).astype(np.float32)
 
@@ -425,12 +419,13 @@ def render_part(part_data, img_paths, raw_mp3, ass_path, out_mp4):
     voice_dur = float(MP3(raw_mp3).info.length)
     part_dur = max(MIN_PART_SECONDS, voice_dur + 8.0)
 
-    # 1. Generate binaural horror WAV
-    bg_wav = out_mp4.replace(".mp4", "_bg.wav")
-    generate_horror_bg_wav(bg_wav, part_dur, bpm=part_data["bpm"])
+    abs_imgs = [os.path.abspath(p) for p in img_paths]
+    abs_mp3 = os.path.abspath(raw_mp3)
+    abs_out = os.path.abspath(out_mp4)
+    abs_bg_wav = os.path.abspath(out_mp4.replace(".mp4", "_bg.wav"))
+    generate_horror_bg_wav(abs_bg_wav, part_dur, bpm=part_data["bpm"])
 
-    # 2. Render 10 animated clips with alternating zoom + horror shake on scare scenes
-    n_scenes = len(img_paths)
+    n_scenes = len(abs_imgs)
     fade_dur = 0.6
     scene_dur = (part_dur + (n_scenes - 1) * fade_dur) / n_scenes
     frames = max(24, int(math.ceil(scene_dur * 24)))
@@ -438,10 +433,9 @@ def render_part(part_data, img_paths, raw_mp3, ass_path, out_mp4):
 
     inputs = []
     filters = []
-    for i, img in enumerate(img_paths):
+    for i, img in enumerate(abs_imgs):
         inputs.extend(["-loop", "1", "-t", f"{scene_dur:.3f}", "-i", img])
         if i in (3, 7, 9):
-            # Horror tremor + vibrant glow on scare scenes
             zp = f"zoompan=z='1.06+0.0008*on':x='iw/2-(iw/zoom/2)+sin(on*1.7)*7':y='ih/2-(ih/zoom/2)+cos(on*1.3)*5':d={frames}:s=1280x720:fps=24"
         elif i % 2 == 0:
             zp = f"zoompan=z='min(zoom+0.0009,1.16)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={frames}:s=1280x720:fps=24"
@@ -457,30 +451,27 @@ def render_part(part_data, img_paths, raw_mp3, ass_path, out_mp4):
         filters.append(f"{last_v}[v{i}]xfade=transition={trans}:duration={fade_dur}:offset={offset:.3f}{out_lbl}")
         last_v = out_lbl
 
-    # Left-side Devanagari captions
     ass_name = os.path.basename(ass_path)
     filters.append(f"[v_all]ass={ass_name}[vout]")
 
-    # Audio indices: n_scenes = voice mp3, n_scenes+1 = horror bg wav
     v_idx = n_scenes
     bg_idx = n_scenes + 1
-    # Ghostly subtle lab echo on voice + sidechaincompress so horror swells in voice gaps!
     filters.append(f"[{v_idx}:a]apad=whole_dur={part_dur:.2f},aecho=0.8:0.7:45:0.18,volume=1.35[voice]")
     filters.append(f"[{bg_idx}:a]volume=0.85[bg]")
     filters.append("[bg][voice]sidechaincompress=threshold=0.015:ratio=8:attack=30:release=350[bg_ducked]")
     filters.append("[voice][bg_ducked]amix=inputs=2:duration=first:normalize=0[aout]")
 
     cmd = ["ffmpeg", "-y"] + inputs + [
-        "-i", raw_mp3, "-i", bg_wav,
+        "-i", abs_mp3, "-i", abs_bg_wav,
         "-filter_complex", ";".join(filters),
         "-map", "[vout]", "-map", "[aout]",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
         "-c:a", "aac", "-b:a", "192k",
-        "-t", f"{part_dur:.2f}", out_mp4
+        "-t", f"{part_dur:.2f}", abs_out
     ]
     orig_cwd = os.getcwd()
     try:
-        os.chdir(os.path.dirname(ass_path))
+        os.chdir(os.path.dirname(os.path.abspath(ass_path)))
         subprocess.run(cmd, check=True)
     finally:
         os.chdir(orig_cwd)
@@ -513,7 +504,6 @@ async def main():
         part_files.append(out_mp4)
         await asyncio.sleep(3)
 
-    # Merge all 8 parts into 25+ minute master MP4
     concat_txt = "/tmp/all_parts_v3.txt"
     with open(concat_txt, "w") as f:
         for pf in part_files:
