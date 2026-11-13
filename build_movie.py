@@ -275,7 +275,6 @@ def generate_3d_image(prompt, out_path, hud_text, seed):
     if os.path.exists(out_path):
         os.remove(out_path)
 
-    # 1. Cloudflare Workers AI (Primary Free High-Quality 3D)
     if CF_ACCOUNT_ID and CF_API_TOKEN:
         url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}/ai/run/@cf/black-forest-labs/flux-1-schnell"
         headers = {"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"}
@@ -305,7 +304,6 @@ def generate_3d_image(prompt, out_path, hud_text, seed):
     else:
         print("[CF Missing] CF_ACCOUNT_ID or CF_API_TOKEN not set!")
 
-    # 2. Pollinations Flux Fallback
     encoded = urllib.parse.quote(prompt)
     pol_url = f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&model=flux&seed={seed}&nologo=true"
     for attempt in range(2):
@@ -321,7 +319,6 @@ def generate_3d_image(prompt, out_path, hud_text, seed):
             print(f"[Pollinations Err] {e}")
         time.sleep(3)
 
-    # 3. Colourful Atmospheric Horror Gradient Fallback
     print(f"[Fallback Gradient] Creating atmospheric frame for {out_path}")
     subprocess.run([
         "ffmpeg", "-y", "-f", "lavfi",
@@ -456,10 +453,15 @@ def render_part(part_data, img_paths, raw_mp3, ass_path, out_mp4):
 
     v_idx = n_scenes
     bg_idx = n_scenes + 1
-    filters.append(f"[{v_idx}:a]apad=whole_dur={part_dur:.2f},aecho=0.8:0.7:45:0.18,volume=1.35[voice]")
-    filters.append(f"[{bg_idx}:a]volume=0.85[bg]")
-    filters.append("[bg][voice]sidechaincompress=threshold=0.015:ratio=8:attack=30:release=350[bg_ducked]")
-    filters.append("[voice][bg_ducked]amix=inputs=2:duration=first:normalize=0[aout]")
+    filters.append(
+        f"[{v_idx}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,"
+        f"apad=whole_dur={part_dur:.2f},aecho=0.8:0.7:45:0.18,volume=1.35,asplit=2[voice1][voice2]"
+    )
+    filters.append(
+        f"[{bg_idx}:a]aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.85[bg]"
+    )
+    filters.append("[bg][voice1]sidechaincompress=threshold=0.015:ratio=8:attack=30:release=350[bg_ducked]")
+    filters.append("[voice2][bg_ducked]amix=inputs=2:duration=first:normalize=0[aout]")
 
     cmd = ["ffmpeg", "-y"] + inputs + [
         "-i", abs_mp3, "-i", abs_bg_wav,
