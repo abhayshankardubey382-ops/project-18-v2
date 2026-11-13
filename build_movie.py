@@ -22,7 +22,7 @@ STYLE_3D = "3D Pixar style animation, cute expressive Indian young man character
 STORY_PARTS = {
     1: {
         "pace": "smooth",
-        "narration": """क्या आपने कभी महसूस किया है... जब किसी खाली कमरे में अचानक आपकी रीढ़ की हड्डी में बर्फ़ जैसी ठंडक दौड़ती है, तो वो डर होता है... या कोई अनकही फिज़िक्स? मेरा नाम आरव है। तीन दिन पहले तक मेरे लिए भूत, आत्मा, ये सब सिर्फ़ कमज़ोर दिमाग का एक केमिकल लोचा था। पापा के जाने के बाद मैंने अपनी ज़िंदगी में सिर्फ़ लॉजिक को चुना था—शायद इसलिए ताकि किसी के जाने का दर्द मुझे कमज़ोर न बना दे। लेकिन फिर... मैंने पाँच लाख की वो शर्त लगा ली। रात के ठीक बारह बजे, जब मुंबई की एक सौ बीस साल पुरानी बंद पड़ी कॉटन मिल के भारी लोहे के गेट पर बाहर से ताला जड़ा गया, तो मेरे हाथ में कोई ताबीज़ नहीं था। मेरे पास था एक थर्मल कैमरा, एक ईएमएफ मीटर, और अठारह हर्ट्ज़ पकड़ने वाला माइक। पहले दस मिनट बिल्कुल सन्नाटा रहा... इतना गहरा सन्नाटा कि मुझे अपनी ही साँसें भारी लगने लगीं। लेकिन बारह बजकर चौदह मिनट पर... मुझे अचानक ताज़ा भुनी हुई कॉफी की खुशबू आई। एक ऐसी जगह पर, जहाँ चालीस साल से बिजली का एक तार भी नहीं जुड़ा था। मैंने हँसकर कैमरा घुमाया—और तभी स्क्रीन पर वो दिखा, जिसने मेरा गला सुखा दिया। पूरे कमरे का तापमान अट्ठाईस डिग्री था, सिवाय एक कोने के... जहाँ तापमान चार डिग्री सेल्सियस दिखा रहा था, बिल्कुल एक इंसान के आकार में। मैंने तुरंत अपना साउंड एनालाइज़र ऑन किया। स्क्रीन पर अठारह दशमलव नौ हर्ट्ज़ की एक सीधी लाल लाइन चमक रही थी। साइंस कहता है कि अठारह दशमलव नौ हर्ट्ज़ की इन्फ्रासाउंड तरंगें इंसान की आँखों के पर्दे में कंपन पैदा करती हैं, जिससे दिमाग को सामने भूत दिखने का भ्रम होता है। मैं राहत से मुस्कुराया—चलो, विज्ञान जीत गया। मैंने कैमरे में धीरे से कहा कि यहाँ कोई भूत नहीं, सिर्फ़ साउंड वेव्स हैं। लेकिन तभी... मेरी पीठ के ठीक दो इंच पीछे से किसी ने मेरे कान में धीमे से फुसफुसाया। मेरी धड़कनें जैसे थम गईं। मैंने काँपते हाथों से अपने साउंड मीटर की तरफ़ देखा... और उस वक्त मेरा अठारह दशमलव नौ हर्ट्ज़ डिटेक्टर बिल्कुल शांत था।""",
+        "narration": """क्या आपने कभी महसूस किया है... जब किसी खाली कमरे में अचानक आपकी रीढ़ की हड्डी में बर्फ़ जैसी ठंडक दौड़ती है, तो वो डर होता है... या कोई अनकही फिज़िक्स? मेरा नाम आरव है। तीन दिन पहले तक मेरे लिए भूत, आत्मा, ये सब सिर्फ़ कमज़ोर दिमाग का एक केमिकल लोचा था। लेकिन फिर... मैंने पाँच लाख की वो शर्त लगा ली। रात के ठीक बारह बजे, जब मुंबई की एक सौ बीस साल पुरानी बंद पड़ी कॉटन मिल के भारी लोहे के गेट पर बाहर से ताला जड़ा गया, तो मेरे हाथ में कोई ताबीज़ नहीं था। मेरे पास था एक थर्मल कैमरा, एक ईएमएफ मीटर, और अठारह हर्ट्ज़ पकड़ने वाला माइक। पहले दस मिनट बिल्कुल सन्नाटा रहा... इतना गहरा सन्नाटा कि मुझे अपनी ही साँसें भारी लगने लगीं। लेकिन बारह बजकर चौदह मिनट पर... मुझे अचानक ताज़ा भुनी हुई कॉफी की खुशबू आई। एक ऐसी जगह पर, जहाँ चालीस साल से बिजली का एक तार भी नहीं जुड़ा था। मैंने हँसकर कैमरा घुमाया—और तभी स्क्रीन पर वो दिखा, जिसने मेरा गला सुखा दिया। पूरे कमरे का तापमान अट्ठाईस डिग्री था, सिवाय एक कोने के... जहाँ तापमान चार डिग्री सेल्सियस दिखा रहा था, बिल्कुल एक इंसान के आकार में। मैंने तुरंत अपना साउंड एनालाइज़र ऑन किया। स्क्रीन पर अठारह दशमलव नौ हर्ट्ज़ की एक सीधी लाल लाइन चमक रही थी। साइंस कहता है कि अठारह दशमलव नौ हर्ट्ज़ की इन्फ्रासाउंड तरंगें इंसान की आँखों के पर्दे में कंपन पैदा करती हैं, जिससे दिमाग को सामने भूत दिखने का भ्रम होता है। मैं राहत से मुस्कुराया—चलो, विज्ञान जीत गया। मैंने कैमरे में धीरे से कहा कि यहाँ कोई भूत नहीं, सिर्फ़ साउंड वेव्स हैं। लेकिन तभी... मेरी पीठ के ठीक दो इंच पीछे से किसी ने मेरे कान में धीमे से फुसफुसाया। मेरी धड़कनें जैसे थम गईं। मैंने काँपते हाथों से अपने साउंड मीटर की तरफ़ देखा... और उस वक्त मेरा अठारह दशमलव नौ हर्ट्ज़ डिटेक्टर बिल्कुल शांत था।""",
         "prompts": [
             f"{STYLE_3D}, wide shot of eerie abandoned cotton mill in Mumbai at midnight, glowing moonlight, mist",
             f"{STYLE_3D}, close up of cute young Indian engineer Aarav with glasses holding thermal camera inside dark mill",
@@ -167,31 +167,39 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         f.write(header + "\n".join(lines) + "\n")
 
 async def make_voice_and_subs(text, mp3_path, ass_path):
-    comm = edge_tts.Communicate(text=text.strip(), voice="hi-IN-MadhurNeural", rate="-8%", pitch="-4Hz")
-    submaker = edge_tts.SubMaker()
-    audio_chunks = []
-    sentence_events = []
-    async for chunk in comm.stream():
-        if chunk["type"] == "audio":
-            audio_chunks.append(chunk["data"])
-        elif chunk["type"] in ("WordBoundary", "SentenceBoundary"):
-            submaker.feed(chunk)
-    with open(mp3_path, "wb") as f:
-        for c in audio_chunks:
-            f.write(c)
+    for attempt in range(1, 6):
+        try:
+            comm = edge_tts.Communicate(text=text.strip(), voice="hi-IN-MadhurNeural", rate="-8%", pitch="-4Hz")
+            submaker = edge_tts.SubMaker()
+            audio_chunks = []
+            async for chunk in comm.stream():
+                if chunk["type"] == "audio":
+                    audio_chunks.append(chunk["data"])
+                elif chunk["type"] in ("WordBoundary", "SentenceBoundary"):
+                    submaker.feed(chunk)
+            if not audio_chunks:
+                raise RuntimeError("Empty audio chunks")
+            with open(mp3_path, "wb") as f:
+                for c in audio_chunks:
+                    f.write(c)
 
-    # Parse SRT from SubMaker into clean left-aligned Devanagari ASS
-    srt_text = submaker.get_srt()
-    blocks = [b.strip() for b in srt_text.strip().split("\n\n") if b.strip()]
-    for b in blocks:
-        parts = b.splitlines()
-        if len(parts) >= 3 and "-->" in parts[1]:
-            t1, t2 = [p.strip().replace(",", ".") for p in parts[1].split("-->")]
-            def to_sec(ts):
-                hh, mm, ss = ts.split(":")
-                return int(hh) * 3600 + int(mm) * 60 + float(ss)
-            sentence_events.append((to_sec(t1), to_sec(t2), " ".join(parts[2:])))
-    build_left_ass(sentence_events, ass_path)
+            srt_text = submaker.get_srt()
+            sentence_events = []
+            blocks = [b.strip() for b in srt_text.strip().split("\n\n") if b.strip()]
+            for b in blocks:
+                parts = b.splitlines()
+                if len(parts) >= 3 and "-->" in parts[1]:
+                    t1, t2 = [p.strip().replace(",", ".") for p in parts[1].split("-->")]
+                    def to_sec(ts):
+                        hh, mm, ss = ts.split(":")
+                        return int(hh) * 3600 + int(mm) * 60 + float(ss)
+                    sentence_events.append((to_sec(t1), to_sec(t2), " ".join(parts[2:])))
+            build_left_ass(sentence_events, ass_path)
+            return
+        except Exception as e:
+            print(f"[TTS Retry {attempt}/5] {e}")
+            await asyncio.sleep(4)
+    raise RuntimeError("TTS failed after 5 attempts")
 
 async def main():
     part_videos = []
@@ -205,6 +213,7 @@ async def main():
         ass_path = f"{BASE_DIR}/subs/part_{part_id:02d}.ass"
         if not os.path.exists(raw_mp3) or not os.path.exists(ass_path):
             await make_voice_and_subs(data["narration"], raw_mp3, ass_path)
+            await asyncio.sleep(3)
 
         voice_dur = MP3(raw_mp3).info.length
         target_dur = max(voice_dur + 3.0, MIN_PART_SECONDS)
@@ -230,14 +239,12 @@ async def main():
                 if not os.path.exists(img_path):
                     ok = generate_cf_image(prompt, img_path)
                     if not ok:
-                        # Fallback dark atmospheric PNG
                         subprocess.run([
                             "ffmpeg", "-y", "-f", "lavfi",
                             "-i", "color=c=#080c14:s=1280x720:d=1",
                             "-frames:v", "1", img_path
                         ], check=True)
 
-                # Alternating Zoom-In and Zoom-Out
                 if idx % 2 == 0:
                     zp = f"zoompan=z='min(zoom+0.0008,1.15)':d={frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1280x720:fps=24"
                 else:
@@ -260,7 +267,6 @@ async def main():
             drone_wav
         ], check=True)
 
-        # Burn Left-Side Devanagari Hindi Captions + Mix Audio
         ass_escaped = os.path.abspath(ass_path).replace(":", "\\:")
         subprocess.run([
             "ffmpeg", "-y", "-i", raw_vid, "-i", padded_wav, "-i", drone_wav,
